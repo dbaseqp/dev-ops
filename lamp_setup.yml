@@ -1,0 +1,99 @@
+---
+#Setup a secure LAMP instance on CentOS 7
+- 
+  name: Setup Apache2
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: "(Apache) [1/4]: Ensure Apache2 is installed"
+      yum:
+        name: httpd
+        state: present
+
+    - name: "(Apache) [2/4]: Backup existing Apache2 files"
+      copy:
+        src: /etc/httpd/conf/httpd.conf
+        dest: /tmp/httpd.conf_backup
+        backup: yes
+        remote_src: yes
+
+    - name: "(Apache) [3/4]: Configure Apache2"
+      lineinfile:
+         dest: "/etc/httpd/conf/httpd.conf"
+         regexp: "{{ item.regexp }}"
+         line: "{{ item.line }}"
+      with_items:
+        - {regexp: 'ServerSignature', line: 'ServerSignature Off'}
+        - {regexp: 'ServerTokens', line: 'ServerTokens Prod'}
+        - {regexp: 'TraceEnable', line: 'TraceEnable Off'}
+
+    - name: "(Apache) [4/4]: Restarting Apache2 to apply changes..."
+      service: 
+        name: httpd
+        state: restarted
+
+    - name: "(MySQL) [1/4]: Ensure MySQL is installed"
+      yum:
+        name: 
+          - "http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm"
+          - mysql-server
+        state: present
+
+    - name: "(MySQL) [2/4]: Backup existing MySQL files"
+      copy:
+        src: /etc/my.cnf
+        dest: /tmp/my.cnf_backup
+        backup: yes
+        remote_src: yes
+
+    - name: "(MySQL) [3/4]: Configure MySQL (/etc/my.cnf)"
+      lineinfile:
+         dest: "/etc/my.cnf"
+         regexp: "{{ item.regexp }}"
+         line: "{{ item.line }}"
+      with_items:
+        - {regexp: 'skip-show-database', line: 'skip-show-database'}
+
+    - name: "(MySQL) [4/4]: Restarting MySQL to apply changes..."
+      service: 
+        name: mysqld
+        state: restarted
+
+    - name: "(PHP) [1/4]: Ensure PHP is installed"
+      yum:
+        name: 
+          - php
+          - php-gd
+          - php-mysqlnd
+          - php-mbstring
+          - php-process
+          - php-xmlrpc
+          - php-xml
+          - libxslt
+        state: present
+
+    - name: "(PHP) [2/4]: Backup existing PHP files"
+      copy:
+        src: /etc/php.ini
+        dest: /tmp/php.ini_backup
+        backup: yes
+        remote_src: yes
+
+    - name: "(PHP) [3/4]: Configure PHP (/etc/php.ini)"
+      lineinfile:
+         dest: "/etc/php.ini"
+         regexp: "{{ item.regexp }}"
+         line: "{{ item.line }}"
+      with_items:
+        - {regexp: 'disable_functions', line: 'disable_functions = exec, system, shell_exec, passthru, popen, curl_exec, curl_multi_exec, parse_ini_file, show_source, proc_open, pcntl_exec'}
+        - {regexp: 'expose_php', line: 'expose_php = Off'}
+        - {regexp: 'display_errors', line: 'display_errors = Off'}
+        - {regexp: 'track_errors', line: 'track_errors = Off'}
+        - {regexp: 'html_errors', line: 'html_errors = Off'}
+        
+    - name: "(PHP) [4/4]: Restarting Apache2 to apply changes..."
+      service: 
+        name: httpd
+        state: restarted
+
+        #        - {regexp: '', line: ''}
