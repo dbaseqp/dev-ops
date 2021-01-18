@@ -1,6 +1,5 @@
 ---
-#Setup a secure LAMP instance on CentOS 7
-- name: Setup Apache2
+- name: Setup a secure LAMP instance on CentOS 7
   hosts: webservers
   become: yes
   tasks:
