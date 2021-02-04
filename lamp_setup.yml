@@ -5,7 +5,7 @@
   tasks:
     - name: "Ensure LAMP packages installed"
       yum:
-        name: 
+        name:
           - "http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm"
           - mysql-server
           - httpd
@@ -31,7 +31,7 @@
         - {regexp: 'TraceEnable', line: 'TraceEnable Off'}
 
     - name: "(Apache) [2/2]: Restarting Apache2 to apply changes..."
-      service: 
+      service:
         name: httpd
         state: restarted
 
@@ -45,7 +45,7 @@
         - {regexp: 'skip-show-database', line: 'skip-show-database'}
 
     - name: "(MySQL) [2/2]: Restarting MySQL to apply changes..."
-      service: 
+      service:
         name: mysqld
         state: restarted
 
@@ -61,8 +61,8 @@
         - {regexp: 'display_errors', line: 'display_errors = Off'}
         - {regexp: 'track_errors', line: 'track_errors = Off'}
         - {regexp: 'html_errors', line: 'html_errors = Off'}
-        
+
     - name: "(PHP) [2/2]: Restarting Apache2 to apply changes..."
-      service: 
+      service:
         name: httpd
         state: restarted
