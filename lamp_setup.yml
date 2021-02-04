@@ -1,6 +1,6 @@
 ---
 - name: Setup a secure LAMP instance on CentOS 7
-  hosts: webservers
+  hosts: all
   become: yes
   tasks:
     - name: "Ensure LAMP packages installed"
