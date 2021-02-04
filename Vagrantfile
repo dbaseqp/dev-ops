@@ -14,6 +14,6 @@ Vagrant.configure("2") do |config|
     override.ssh.private_key_path = "~/.ssh/google_compute_engine"
   end
   config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "playbook.yml"
+    ansible.playbook = "lamp_setup.yml"
   end
 end
