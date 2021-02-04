@@ -7,10 +7,13 @@ Vagrant.configure("2") do |config|
     google.image_family = 'centos-7'
     google.name = "spinup-centos"
     google.tags = ['http-server']
+    google.machine_type = 'n1-standard-1'
+    google.disk_size = '20'
+
     override.ssh.username = "ansible"
     override.ssh.private_key_path = "~/.ssh/google_compute_engine"
   end
   config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "playbook.yml"
+    ansible.playbook = "lamp_setup.yml"
   end
 end
